@@ -1,0 +1,24 @@
+services:
+  postgres:
+    container_name: secure-starter-db
+    image: public.ecr.aws/docker/library/postgres:17
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: secure_starter_db
+      TZ: UTC
+      PGTZ: UTC
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5486:5432"
+    networks:
+      - spring-demo
+    restart: unless-stopped
+
+networks:
+  spring-demo:
+    driver: bridge
+
+volumes:
+  postgres:
