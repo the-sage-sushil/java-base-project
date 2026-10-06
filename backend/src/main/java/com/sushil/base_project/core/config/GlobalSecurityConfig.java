@@ -26,6 +26,7 @@ public class GlobalSecurityConfig {
     public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**", "/api/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

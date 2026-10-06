@@ -19,13 +19,15 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 @Getter 
 @Setter
-@AllArgsConstructor 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class User {
 
@@ -42,14 +44,14 @@ public class User {
     @Column (nullable = false)
     private String password;
     
-    @Builder.Default
     private boolean enabled;
-    @Builder.Default
+
     @Column(name = "account_non_locked", nullable = false)
     private boolean accountNotLocked;
 
     @Column (nullable = false)
     private Date createdAt;
+    @Column (nullable = false)
     private Date updatedAt;
 
 
