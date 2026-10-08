@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.sushil.base_project.auth.models.LoginRequestDTO;
+import com.sushil.base_project.auth.models.LoginResponseDTO;
 import com.sushil.base_project.user.Entities.User;
-import com.sushil.base_project.user.Models.LoginRequestDTO;
-import com.sushil.base_project.user.Models.LoginResponseDTO;
 import com.sushil.base_project.user.Models.RegisterRequestDTO;
 import com.sushil.base_project.user.Repositories.RoleRepository;
 import com.sushil.base_project.user.Repositories.UserRepository;

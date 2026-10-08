@@ -1,4 +1,4 @@
-package com.sushil.base_project.user.Models;
+package com.sushil.base_project.auth.models;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.NonNull;

@@ -8,7 +8,7 @@ First, a quick check on your login. If it looks up the user and calls `passwordE
    - `getAuthorities()`: roles as `ROLE_X`, plus permissions as plain `USER_READ`, etc.
    - `isEnabled()` and `isAccountNonLocked()`, mapped from your entity fields.
 2. **`CustomUserDetailsService`** implements `UserDetailsService`. `loadUserByUsername(email)` fetches the user with roles and permissions. Use a `JOIN FETCH` or `@EntityGraph` to avoid lazy-loading errors and N+1 queries.
-3. **`SecurityConfig`** defines:
+3. **`SecurityConfig`** defines:.
    - a `PasswordEncoder` bean (BCrypt)
    - an `AuthenticationManager` bean (from `AuthenticationConfiguration`)
    - a `SecurityFilterChain` that:
