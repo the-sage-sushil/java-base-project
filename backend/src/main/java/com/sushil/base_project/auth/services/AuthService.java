@@ -10,14 +10,25 @@ import org.springframework.stereotype.Service;
 
 import com.sushil.base_project.auth.models.LoginRequestDTO;
 import com.sushil.base_project.auth.models.LoginResponseDTO;
+import com.sushil.base_project.auth.models.RegisterRequestDTO;
+import com.sushil.base_project.user.UserRegistration;
+import com.sushil.base_project.user.Models.RegistrationCommand;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final UserRegistration userRegistration;
+
+    public void register(RegisterRequestDTO request) {
+        userRegistration.register(new RegistrationCommand(
+                request.username(),
+                request.email(),
+                request.password()));
+    }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
 
@@ -36,5 +47,4 @@ public class AuthService {
                         .filter(authority -> authority.startsWith("ROLE_"))
                         .collect(Collectors.toSet()));
     }
-
 }
