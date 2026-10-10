@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import com.sushil.base_project.auth.models.LoginRequestDTO;
 import com.sushil.base_project.auth.models.LoginResponseDTO;
 import com.sushil.base_project.auth.models.RegisterRequestDTO;
+import com.sushil.base_project.user.RegistrationCommand;
 import com.sushil.base_project.user.UserRegistration;
-import com.sushil.base_project.user.Models.RegistrationCommand;
 
 import lombok.RequiredArgsConstructor;
 

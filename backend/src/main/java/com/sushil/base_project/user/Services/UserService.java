@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sushil.base_project.user.Entities.User;
-import com.sushil.base_project.user.Models.RegistrationCommand;
+import com.sushil.base_project.user.RegistrationCommand;
 import com.sushil.base_project.user.Repositories.RoleRepository;
 import com.sushil.base_project.user.Repositories.UserRepository;
 import com.sushil.base_project.user.UserRegistration;
