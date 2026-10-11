@@ -7,10 +7,8 @@ import java.util.Set;
  */
 public record LoginResponseDTO(
 
-
     String username,
-    String email,
-    Set<String> roles
+    String jwt
 
 ) {
 

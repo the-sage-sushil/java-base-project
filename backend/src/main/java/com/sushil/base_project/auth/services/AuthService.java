@@ -1,7 +1,5 @@
 package com.sushil.base_project.auth.services;
 
-import java.util.stream.Collectors;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.sushil.base_project.auth.models.LoginRequestDTO;
 import com.sushil.base_project.auth.models.LoginResponseDTO;
 import com.sushil.base_project.auth.models.RegisterRequestDTO;
+import com.sushil.base_project.core.security.JwtService;
 import com.sushil.base_project.user.RegistrationCommand;
 import com.sushil.base_project.user.UserRegistration;
 
@@ -22,6 +21,9 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRegistration userRegistration;
+    private final JwtService jwtService;
+
+
 
     public void register(RegisterRequestDTO request) {
         userRegistration.register(new RegistrationCommand(
@@ -40,11 +42,9 @@ public class AuthService {
         }
 
         return new LoginResponseDTO(
-                user.getUsername(),
-                request.email(),
-                user.getAuthorities().stream()
-                        .map(authority -> authority.getAuthority())
-                        .filter(authority -> authority.startsWith("ROLE_"))
-                        .collect(Collectors.toSet()));
+            jwtService.generateAccessToken(user, request.email()),
+            user.getUsername()
+        );
+
     }
 }

@@ -1,4 +1,4 @@
-package com.sushil.base_project.user.Entities;
+package com.sushil.base_project.user.Services;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +7,10 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.sushil.base_project.user.Entities.Permission;
+import com.sushil.base_project.user.Entities.Role;
+import com.sushil.base_project.user.Entities.User;
 
 public class CustomUserDetails implements UserDetails {
 
