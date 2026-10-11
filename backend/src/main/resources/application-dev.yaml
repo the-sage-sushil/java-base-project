@@ -1,0 +1,5 @@
+app:
+  seed-admin:
+    username: admin
+    email: admin@example.com
+    password: password@9699

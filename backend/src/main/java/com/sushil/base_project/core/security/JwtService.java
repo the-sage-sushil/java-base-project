@@ -2,6 +2,7 @@ package com.sushil.base_project.core.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
@@ -18,9 +19,14 @@ public class JwtService {
 
     private final SecretKey key;
 
-    public JwtService(@Value("${jwt.secret}") String secretKeyString) {
+    private final int expirationTimeInMilliSeconds;
+
+    public JwtService(
+            @Value("${jwt.secret}") String secretKeyString,
+            @Value("${jwt.expiration}") int expirationTimeInMilliSeconds) {
         // Build the cryptographic key from your application.properties value
         this.key = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
+        this.expirationTimeInMilliSeconds = expirationTimeInMilliSeconds;
     }
 
     public String generateAccessToken(UserDetails user, String email) {
@@ -30,7 +36,7 @@ public class JwtService {
                 .claim("username", user.getUsername())
                 .claim("role", user.getAuthorities())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 24 hours
+                .expiration(new Date(System.currentTimeMillis() + expirationTimeInMilliSeconds)) // 24 hours
                 .signWith(key)
                 .compact();
     }
@@ -61,5 +67,9 @@ public class JwtService {
 
     private boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    public long getTokenExpire(){
+        return TimeUnit.MILLISECONDS.toMinutes(this.expirationTimeInMilliSeconds); 
     }
 }

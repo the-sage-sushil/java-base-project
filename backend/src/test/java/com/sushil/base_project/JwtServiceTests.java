@@ -21,7 +21,7 @@ class JwtServiceTests {
 
     @Test
     void generatesTokenWithEmailSubjectAndUsernameClaim() {
-        JwtService jwtService = new JwtService(SECRET);
+        JwtService jwtService = new JwtService(SECRET, 900_000);
         UserDetails user = User.withUsername("notsoshul")
                 .password("password")
                 .authorities("ROLE_USER")

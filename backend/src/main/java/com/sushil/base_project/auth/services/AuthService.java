@@ -23,8 +23,6 @@ public class AuthService {
     private final UserRegistration userRegistration;
     private final JwtService jwtService;
 
-
-
     public void register(RegisterRequestDTO request) {
         userRegistration.register(new RegistrationCommand(
                 request.username(),
@@ -40,10 +38,13 @@ public class AuthService {
         if (!(auth.getPrincipal() instanceof UserDetails user)) {
             throw new IllegalStateException("Authenticated principal does not provide user details");
         }
+        String token = jwtService.generateAccessToken(user, request.email());
 
         return new LoginResponseDTO(
-            jwtService.generateAccessToken(user, request.email()),
-            user.getUsername()
+                token,
+                user.getUsername(),
+                jwtService.getTokenExpire()
+
         );
 
     }
