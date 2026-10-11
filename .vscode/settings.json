@@ -2,6 +2,7 @@
     "java.compile.nullAnalysis.mode": "automatic",
     "java.format.onType.enabled": true,
     "java.format.settings.url": "https://githubusercontent.com",
-    "java.format.settings.profile": "Spring Conventions"
+    "java.format.settings.profile": "Spring Conventions",
+    "java.configuration.updateBuildConfiguration": "interactive"
 
 }
