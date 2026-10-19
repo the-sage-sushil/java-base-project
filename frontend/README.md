@@ -34,7 +34,21 @@ To build the project run:
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This compiles the Angular app into the backend's `src/main/resources/static/` directory.
+
+## Authentication
+
+The standalone login and registration pages call `POST /api/auth/login` and
+`POST /api/auth/register`. The dashboard and profile require a signed-in
+session; the admin users placeholder requires `ROLE_ADMIN`. The functional
+HTTP interceptor adds the access token to API requests, sends 401 responses
+back to sign-in, and routes 403 responses to the forbidden page.
+
+For this milestone, the access token is kept in an Angular signal and mirrored
+to `sessionStorage` so it survives page reloads. Roles and permissions decoded
+from the token are display/UI hints only; the backend must enforce authorization
+on every protected endpoint. Refresh-token support and the move to an
+HttpOnly-cookie-based refresh flow are deferred to Milestone 8.
 
 ## Running unit tests
 
