@@ -1,0 +1,19 @@
+
+    :host { display: block; }
+    .content-card {
+      max-width: 52rem;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: white;
+      color: #000;
+      border-radius: .75rem;
+      box-shadow: 0 8px 30px #17255418;
+    }
+    dl {
+      display: grid;
+      grid-template-columns: minmax(8rem, 1fr) 3fr;
+      gap: .75rem;
+    }
+    dt { font-weight: 700; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+    .disclaimer { color: #475569; font-size: .9rem; }

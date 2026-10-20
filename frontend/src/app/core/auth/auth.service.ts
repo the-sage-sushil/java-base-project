@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 
-import { AuthUser, LoginRequest, LoginResponse, RegisterRequest } from './auth.models';
+import { AuthUser, LoginRequest, LoginResponse, ProfileResponse, RegisterRequest } from './auth.models';
 import { TokenStorage } from './token.storage';
 
 interface JwtClaims {
@@ -48,7 +48,7 @@ export class AuthService {
       })
     );
   }
-
+  
   register(request: RegisterRequest) {
     return this.http.post<void>('/api/auth/register', request);
   }
@@ -71,12 +71,16 @@ export class AuthService {
       this.clearSession();
       return;
     }
-
+    
     this._token.set(token);
     this._user.set(this.createUser(
       typeof claims.username === 'string' ? claims.username : '',
       claims
     ));
+  }
+
+  profile() {
+    return this.http.get<ProfileResponse>('/api/profile');
   }
 
   private clearSession(): void {

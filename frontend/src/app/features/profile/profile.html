@@ -1,0 +1,27 @@
+    <main class="content-card">
+      <a routerLink="/dashboard">← Dashboard</a>
+      <h1>Your profile</h1>
+
+      <dl>
+        <dt>Username</dt>
+        <dd>{{ response()?.username ?? 'Loading...' }}</dd>
+
+        <dt>Email</dt>
+        <dd>{{ response()?.email ?? 'Not available' }}</dd>
+
+        <dt>Roles</dt>
+        <dd>
+          {{ auth.roles().length ? auth.roles().join(', ') : 'No roles found in token' }}
+        </dd>
+
+        <dt>Permissions</dt>
+        <dd>
+          {{ auth.permissions().length ? auth.permissions().join(', ') : 'No permissions found in token' }}
+        </dd>
+      </dl>
+
+      <p class="disclaimer">
+        These values are decoded from the access token for display only
+        and are not trusted for authorization.
+      </p>
+    </main>

@@ -70,6 +70,6 @@ public class JwtService {
     }
 
     public long getTokenExpire(){
-        return TimeUnit.MILLISECONDS.toMinutes(this.expirationTimeInMilliSeconds); 
+        return TimeUnit.MILLISECONDS.toSeconds(this.expirationTimeInMilliSeconds); 
     }
 }

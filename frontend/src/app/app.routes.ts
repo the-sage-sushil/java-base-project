@@ -23,7 +23,7 @@ export const routes: Routes = [
     path: 'profile',
     canActivate: [authGuard, permissionGuard],
     data: { permissions: ['PROFILE_READ'] },
-    loadComponent: () => import('./features/profile/profile.component').then((module) => module.ProfileComponent)
+    loadComponent: () => import('./features/profile/profile').then((module) => module.ProfileComponent)
   },
   {
     path: 'admin/users',

@@ -24,8 +24,11 @@ public class SpaWebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String path, Resource location) throws IOException {
+                        if (path.isEmpty() || path.equals(".")) {
+                            return new ClassPathResource("static/index.html");
+                        }
                         Resource requested = location.createRelative(path);
-                        if (!path.isEmpty() && requested.exists() && requested.isReadable()) {
+                        if (requested.exists() && requested.isReadable()) {
                             return requested;               // real file: js, css, assets
                         }
                         boolean backend = BACKEND_PREFIXES.stream().anyMatch(path::startsWith);

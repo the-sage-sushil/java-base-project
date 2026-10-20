@@ -6,6 +6,7 @@
             "name": "BaseProject - Dev",
             "request": "launch",
             "mainClass": "com.sushil.base_project.BaseProjectApplication",
+            "envFile": "${workspaceFolder}/backend/.env",
             "projectName": "base-project",
             "vmArgs": "-Dspring.profiles.active=dev"
         },

@@ -15,7 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
+@SpringBootTest(properties = "jwt.secret=test-only-secret-key-with-at-least-32-bytes")
 @AutoConfigureMockMvc
 class UserApiSecurityTests {
 

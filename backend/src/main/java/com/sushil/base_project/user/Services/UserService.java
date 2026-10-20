@@ -5,11 +5,12 @@ import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.sushil.base_project.user.Entities.User;
+import com.sushil.base_project.core.common.exceptions.DuplicateResourceException;
 import com.sushil.base_project.user.RegistrationCommand;
+import com.sushil.base_project.user.UserRegistration;
+import com.sushil.base_project.user.Entities.User;
 import com.sushil.base_project.user.Repositories.RoleRepository;
 import com.sushil.base_project.user.Repositories.UserRepository;
-import com.sushil.base_project.user.UserRegistration;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,10 +30,10 @@ public class UserService implements UserRegistration {
         String email = command.email();
 
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email is already registered");
+            throw new DuplicateResourceException("Email is already registered");
         }
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username is already taken");
+            throw new DuplicateResourceException("Username is already taken");
         }
 
         User user = new User();

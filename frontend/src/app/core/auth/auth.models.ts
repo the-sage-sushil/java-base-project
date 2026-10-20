@@ -14,6 +14,10 @@ export interface LoginResponse {
   username: string;
   expiresIn: number;
 }
+export interface ProfileResponse {
+  username: string;
+  email: string;
+}
 
 export interface AuthUser {
   username: string;

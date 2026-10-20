@@ -25,12 +25,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User  not found with the email: " + email));
         return new CustomUserDetails(user);
     }
-
-
-    // 1. Define additional security beans here (e.g., PasswordEncoder,etc)
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }

@@ -10,34 +10,48 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.sushil.base_project.core.common.exceptions.DuplicateResourceException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of(
-                        "message",
-                        "Invalid email or password"));
-    }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Map.of(
+                                                "message",
+                                                "Invalid email or password"));
+        }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        @ExceptionHandler(UsernameNotFoundException.class)
+        public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of(
-                        "message",
-                        "Invalid email or password"));
-    }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Map.of(
+                                                "message",
+                                                "Invalid email or password"));
+        }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Map<String, String>> handleAuthenticationException(
-            AuthenticationException ex) {
+        @ExceptionHandler(AuthenticationException.class)
+        public ResponseEntity<Map<String, String>> handleAuthenticationException(
+                        AuthenticationException ex) {
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of(
-                        "message",
-                        "Invalid email or password"));
-    }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Map.of(
+                                                "message",
+                                                "Invalid email or password"));
+        }
+
+        @ExceptionHandler(DuplicateResourceException.class)
+        public ResponseEntity<Map<String, String>> handleDuplicateResourceException(
+                        DuplicateResourceException ex) {
+
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body(Map.of(
+                                                "message",
+                                                "Username or email alredy used."));
+
+        }
+
 }
