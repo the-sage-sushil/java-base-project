@@ -72,4 +72,12 @@ public class JwtService {
     public long getTokenExpire(){
         return TimeUnit.MILLISECONDS.toSeconds(this.expirationTimeInMilliSeconds); 
     }
+
+
+    public String generatNewToken(String token, String email) {
+        Claims claims = extractAllClaims(token);
+        
+        return "";
+    }
+
 }

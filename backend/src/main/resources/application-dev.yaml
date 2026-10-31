@@ -3,3 +3,7 @@ app:
     username: admin
     email: admin@example.com
     password: password@9699
+
+  security:
+    cookie-secure: true
+    refresh-token-ttl: 7d
