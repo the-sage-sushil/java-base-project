@@ -19,10 +19,7 @@ import com.sushil.base_project.auth.Repository.RefreshTokenRepository;
 import com.sushil.base_project.auth.entities.RefreshToken;
 import com.sushil.base_project.auth.models.ClientInfo;
 
-import lombok.AllArgsConstructor;
-
 @Service
-@AllArgsConstructor
 public class RefreshTokenService {
 
 
@@ -33,9 +30,14 @@ public class RefreshTokenService {
     private static final SecureRandom random = new SecureRandom();
 
     private final RefreshTokenRepository refreshTokenRepository;
-
-    @Value("{app.security.refresh-token-ttl:7d}}")
     private final Duration ttl;
+
+    public RefreshTokenService(
+            RefreshTokenRepository refreshTokenRepository,
+            @Value("${app.security.refresh-token-ttl:7d}") Duration ttl) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.ttl = ttl;
+    }
 
     @Transactional
     public String startFamily(String subject, ClientInfo client) {
