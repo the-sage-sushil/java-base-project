@@ -4,16 +4,39 @@ services:
     image: public.ecr.aws/docker/library/postgres:17
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: secure_starter_db
       TZ: UTC
       PGTZ: UTC
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
-      - "5486:5432"
-    networks:
-      - spring-demo
+      - "5486:5432"          # host access for tests/IDE only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d secure_starter_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [spring-demo]
+    restart: unless-stopped
+
+  app:
+    container_name: secure-starter-app
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/secure_starter_db?options=-c%20TimeZone=UTC
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (32+ bytes)}
+      # Local demo only: the dev profile seeds an admin and sets cookie-secure=false
+      SPRING_PROFILES_ACTIVE: dev
+      DEV_ADMIN_PASSWORD: ${DEV_ADMIN_PASSWORD:?set DEV_ADMIN_PASSWORD}
+    ports:
+      - "8080:8080"
+    networks: [spring-demo]
     restart: unless-stopped
 
 networks:
