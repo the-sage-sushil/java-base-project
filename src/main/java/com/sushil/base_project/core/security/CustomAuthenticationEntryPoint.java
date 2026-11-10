@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         errorDetails.put("timestamp", LocalDateTime.now().toString());
         errorDetails.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         errorDetails.put("error", "Unauthorized");
-        errorDetails.put("message", authException.getMessage() != null ? authException.getMessage() : "Full authentication is required to access this resource");
+        errorDetails.put("message", "Authentication is required to access this resource");
         errorDetails.put("path", request.getRequestURI());
 
         objectMapper.writeValue(response.getWriter(), errorDetails);

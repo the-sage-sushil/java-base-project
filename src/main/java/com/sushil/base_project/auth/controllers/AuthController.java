@@ -31,8 +31,9 @@ public class AuthController {
     private final RefreshCookieFactory cookies;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> createUser(@RequestBody @Valid RegisterRequestDTO request) {
-        authService.register(request);
+    public ResponseEntity<Void> createUser(
+            @RequestBody @Valid RegisterRequestDTO request, HttpServletRequest http) {
+        authService.register(request, ClientInfo.from(http));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -62,8 +63,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            @CookieValue(name = RefreshCookieFactory.NAME, required = false) String refreshToken) {
-        authService.logout(refreshToken);
+            @CookieValue(name = RefreshCookieFactory.NAME, required = false) String refreshToken,
+            HttpServletRequest http) {
+        authService.logout(refreshToken, ClientInfo.from(http));
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, cookies.clear().toString())
                 .build();

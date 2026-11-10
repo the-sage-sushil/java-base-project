@@ -1,9 +1,9 @@
 app:
   seed-admin:
-    username: admin
-    email: admin@example.com
-    password: password@9699
+    username: ${DEV_ADMIN_USERNAME:admin}
+    email: ${DEV_ADMIN_EMAIL:admin@example.com}
+    password: ${DEV_ADMIN_PASSWORD:password}
 
   security:
-    cookie-secure: true
+    cookie-secure: false
     refresh-token-ttl: 7d

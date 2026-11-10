@@ -1,14 +1,14 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, shareReplay, tap, throwError } from 'rxjs';
 
 import { AuthUser, LoginRequest, LoginResponse, ProfileResponse, RegisterRequest } from './auth.models';
-import { TokenStorage } from './token.storage';
 
 interface JwtClaims {
   exp?: unknown;
   username?: unknown;
+  email: unknown;
   roles?: unknown;
   role?: unknown;
   permissions?: unknown;
@@ -19,10 +19,11 @@ interface JwtClaims {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly tokenStorage = inject(TokenStorage);
 
   private readonly _user = signal<AuthUser | null>(null);
   private readonly _token = signal<string | null>(null);
+  private refreshRequest: Observable<LoginResponse> | null = null;
+  private logoutRequest: Observable<void> | null = null;
 
   readonly currentUser = this._user.asReadonly();
   readonly accessToken = this._token.asReadonly();
@@ -42,41 +43,63 @@ export class AuthService {
     return this.http.post<LoginResponse>('/api/auth/login', request).pipe(
       tap((response) => {
         const claims = this.decodeToken(response.jwt);
-        this.tokenStorage.setToken(response.jwt);
-        this._token.set(response.jwt);
-        this._user.set(this.createUser(response.username, claims));
+        this.setSession(response, claims);
       })
     );
   }
-  
+
   register(request: RegisterRequest) {
     return this.http.post<void>('/api/auth/register', request);
   }
 
-  logout(returnUrl?: string): void {
-    this.clearSession();
-    void this.router.navigate(['/login'], {
-      queryParams: returnUrl ? { returnUrl } : undefined
-    });
+  refresh(): Observable<LoginResponse> {
+    if (!this.refreshRequest) {
+      let request!: Observable<LoginResponse>;
+      request = this.http.post<LoginResponse>('/api/auth/refresh', {}, { withCredentials: true }).pipe(
+        tap((response) => this.setSession(response, this.decodeToken(response.jwt))),
+        finalize(() => {
+          if (this.refreshRequest === request) {
+            this.refreshRequest = null;
+          }
+        }),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+      this.refreshRequest = request;
+    }
+
+    return this.refreshRequest;
   }
 
-  restoreSession(): void {
-    const token = this.tokenStorage.getToken();
-    if (!token) {
-      return;
+  restoreSession(): Observable<void> {
+    return this.refresh().pipe(
+      map(() => undefined),
+      catchError(() => {
+        this.clearSession();
+        return of(undefined);
+      })
+    );
+  }
+
+  logout(returnUrl?: string): Observable<void> {
+    if (!this.logoutRequest) {
+      let request!: Observable<void>;
+      request = this.http.post<void>('/api/auth/logout', {}, { withCredentials: true }).pipe(
+        map(() => undefined),
+        finalize(() => {
+          if (this.logoutRequest === request) {
+            this.logoutRequest = null;
+          }
+          this.clearSession();
+          void this.router.navigate(['/login'], {
+            queryParams: returnUrl ? { returnUrl } : undefined
+          });
+        }),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+      this.logoutRequest = request;
     }
 
-    const claims = this.decodeToken(token);
-    if (!claims || typeof claims.exp !== 'number' || claims.exp * 1000 <= Date.now()) {
-      this.clearSession();
-      return;
-    }
-    
-    this._token.set(token);
-    this._user.set(this.createUser(
-      typeof claims.username === 'string' ? claims.username : '',
-      claims
-    ));
+    return this.logoutRequest;
   }
 
   profile() {
@@ -84,18 +107,24 @@ export class AuthService {
   }
 
   private clearSession(): void {
-    this.tokenStorage.clearToken();
     this._token.set(null);
     this._user.set(null);
+  }
+
+  private setSession(response: LoginResponse, claims: JwtClaims | null): void {
+    this._token.set(response.jwt);
+    this._user.set(this.createUser(response.username, claims));
   }
 
   private createUser(username: string, claims: JwtClaims | null): AuthUser {
     const authorities = this.readAuthorities(claims?.role ?? claims?.authorities);
     const roles = this.readStringArray(claims?.roles);
+    const email = claims?.email;
     const permissions = this.readStringArray(claims?.permissions);
 
     return {
       username,
+      email: String(claims?.email),
       roles: roles.length ? roles : authorities.filter((authority) => authority.startsWith('ROLE_')),
       permissions: permissions.length
         ? permissions

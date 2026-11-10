@@ -10,14 +10,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
 import com.sushil.base_project.core.security.CustomAccessDeniedHandler;
 import com.sushil.base_project.core.security.CustomAuthenticationEntryPoint;
+import com.sushil.base_project.core.security.AuthRateLimitFilter;
 import com.sushil.base_project.core.security.JwtAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +35,7 @@ public class GlobalSecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler CustomAccessDeniedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthRateLimitFilter authRateLimitFilter;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -54,7 +58,7 @@ public class GlobalSecurityConfig {
     @Bean
     public SecurityFilterChain swaggFilterChain(HttpSecurity http) throws Exception {
 
-        http.securityMatcher("/swagger/open-api/**")
+        http.securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**")
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
@@ -67,8 +71,20 @@ public class GlobalSecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.deny())
+                        .addHeaderWriter(new StaticHeadersWriter(
+                                "Content-Security-Policy",
+                                "default-src 'self'; base-uri 'self'; object-src 'none'; "
+                                        + "frame-ancestors 'none'; form-action 'self'; "
+                                        + "img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"))
+                        .addHeaderWriter(new StaticHeadersWriter(
+                                "Referrer-Policy", "strict-origin-when-cross-origin"))
+                        .addHeaderWriter(new StaticHeadersWriter(
+                                "Permissions-Policy", "camera=(), microphone=(), geolocation=()")))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/account/**").authenticated()
                         .requestMatchers("/api/public/**", "/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
@@ -78,10 +94,19 @@ public class GlobalSecurityConfig {
                         .accessDeniedHandler(CustomAccessDeniedHandler))
 
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 // Add the JWT filter right before the standard username/password filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public FilterRegistrationBean<AuthRateLimitFilter> authRateLimitFilterRegistration(
+            AuthRateLimitFilter filter) {
+        FilterRegistrationBean<AuthRateLimitFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
     

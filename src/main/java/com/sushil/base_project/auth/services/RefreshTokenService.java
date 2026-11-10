@@ -103,6 +103,11 @@ public class RefreshTokenService {
 
     }
 
+    @Transactional
+    public void revokeAllBySubject(String subject) {
+        refreshTokenRepository.revokeAllBySubject(subject, Instant.now());
+    }
+
     private static String sha256(String raw) {
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256")

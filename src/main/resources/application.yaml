@@ -2,9 +2,9 @@ spring:
   application:
     name: base-project
   datasource:
-    url: jdbc:postgresql://localhost:5486/secure_starter_db?options=-c%20TimeZone=UTC
-    username: username
-    password: password
+    url: jdbc:postgresql://localhost:5432/secure_starter_db?options=-c%20TimeZone=UTC
+    username: postgres
+    password: root
   jpa:
     hibernate:
       ddl-auto: validate   # Flyway owns the schema, Hibernate only checks it
@@ -17,4 +17,26 @@ spring:
     enabled: true
 jwt:
   secret: ${JWT_SECRET}
-  expiration: 900
+  expiration: 900000
+
+app:
+  security:
+    max-failed-login-attempts: 5
+    auth-rate-limit:
+      requests: 10
+      window: 1m
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

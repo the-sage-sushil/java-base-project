@@ -49,6 +49,9 @@ public class User {
     @Column(name = "account_non_locked", nullable = false)
     private boolean accountNotLocked;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts;
+
     @Column (nullable = false)
     private Date createdAt;
     @Column (nullable = false)

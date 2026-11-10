@@ -38,17 +38,20 @@ This compiles the Angular app into the backend's `src/main/resources/static/` di
 
 ## Authentication
 
-The standalone login and registration pages call `POST /api/auth/login` and
-`POST /api/auth/register`. The dashboard and profile require a signed-in
-session; the admin users placeholder requires `ROLE_ADMIN`. The functional
-HTTP interceptor adds the access token to API requests, sends 401 responses
-back to sign-in, and routes 403 responses to the forbidden page.
+The login and registration pages call `POST /api/auth/login` and
+`POST /api/auth/register`. The access token is kept only in an Angular signal.
+The server stores a rotating refresh token in an HttpOnly, SameSite=Strict
+cookie scoped to `/api/auth`; the initializer silently refreshes on reload.
+When a protected API request receives a 401, the interceptor shares one refresh
+request across concurrent failures and retries each request once.
 
-For this milestone, the access token is kept in an Angular signal and mirrored
-to `sessionStorage` so it survives page reloads. Roles and permissions decoded
-from the token are display/UI hints only; the backend must enforce authorization
-on every protected endpoint. Refresh-token support and the move to an
-HttpOnly-cookie-based refresh flow are deferred to Milestone 8.
+The admin users page requires both `ROLE_ADMIN` and `USER_READ`. Roles and
+permissions decoded from the access token only control UI visibility; the
+backend separately enforces each admin permission. A refresh failure clears
+the in-memory session and returns the user to sign-in.
+
+The cookie and Angular app are same-origin. If the frontend is moved to another
+domain, revisit the SameSite and CSRF policy before deployment.
 
 ## Running unit tests
 

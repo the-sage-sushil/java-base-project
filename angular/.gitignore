@@ -44,6 +44,6 @@ __screenshots__/
 Thumbs.db
 
 
-frontend/node/
-frontend/node_modules/
-frontend/dist/
+angular/node/
+angular/node_modules/
+angular/dist/

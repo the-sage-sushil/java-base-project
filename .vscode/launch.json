@@ -3,10 +3,16 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BaseProjectApplication",
+            "request": "launch",
+            "mainClass": "com.sushil.base_project.BaseProjectApplication"
+        },
+        {
+            "type": "java",
             "name": "BaseProject - Dev",
             "request": "launch",
             "mainClass": "com.sushil.base_project.BaseProjectApplication",
-            "envFile": "${workspaceFolder}/backend/.env",
+            "envFile": "${workspaceFolder}/.env",
             "projectName": "base-project",
             "vmArgs": "-Dspring.profiles.active=dev"
         },

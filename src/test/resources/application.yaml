@@ -14,3 +14,9 @@ spring:
 jwt:
   secret: test-only-secret-key-with-at-least-32-bytes
   expiration: 900000
+
+app:
+  security:
+    auth-rate-limit:
+      requests: 1000
+      window: 1m

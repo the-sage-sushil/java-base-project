@@ -81,9 +81,9 @@ Consequence: the Docker plan drops from three containers to two (app and Postgre
 | Command | Use |
 |---|---|
 | `mvn clean package` (in `backend/`) | Full build: Angular and Spring, one jar |
-| `mvn package -DskipFrontend` | Backend only, fast |
-| `mvn help:active-profiles` | Confirm the `frontend` profile is active |
-| `ng serve` (in `frontend/`) | Dev mode on `:4200` with proxy |
+| `mvn package -Dskipangular` | Backend only, fast |
+| `mvn help:active-profiles` | Confirm the `angular` profile is active |
+| `ng serve` (in `angular/`) | Dev mode on `:4200` with proxy |
 
 ### Checkpoint (verified)
 
@@ -109,7 +109,7 @@ Consequence: the Docker plan drops from three containers to two (app and Postgre
 ### Folder structure
 
 ```
-frontend/src/app/
+angular/src/app/
 ├── core/
 │   ├── auth/
 │   │   ├── auth.models.ts
@@ -345,8 +345,8 @@ Last updated: 2026-10-20 (after reviewing the repo at commit `596a555`)
 | Command | Use |
 |---|---|
 | `mvn clean package` (in `backend/`) | Full build, one jar |
-| `mvn package -DskipFrontend` | Backend only |
-| `ng serve` (in `frontend/`) | Dev mode with proxy |
+| `mvn package -Dskipangular` | Backend only |
+| `ng serve` (in `angular/`) | Dev mode with proxy |
 
 ---
 
@@ -368,7 +368,7 @@ Findings from the repo review, in priority order. Do 1 to 4 before M8.
 
 ### Tests
 - [ ] **5. Missing tests from the M7 plan:** `authInterceptor` (adds header, skips auth endpoints, 401 and 403 handling) and the three guards. The backend has none for the `JwtAuthenticationFilter` (garbage, expired, tampered token; disabled user), login, or register.
-- [ ] **6. Backend tests need a live Postgres on `:5486` and a built `static/index.html`** (`anonymousCanLoadAngularApp`). Move to Testcontainers in M10 and mark the SPA test to skip with `-DskipFrontend`.
+- [ ] **6. Backend tests need a live Postgres on `:5486` and a built `static/index.html`** (`anonymousCanLoadAngularApp`). Move to Testcontainers in M10 and mark the SPA test to skip with `-Dskipangular`.
 
 ### Tidy
 - [ ] `LoginResponseDTO.expiresIn` is **minutes** (`getTokenExpire`), but the original design said seconds. Switch to seconds now, because M8 will use it to schedule refresh.

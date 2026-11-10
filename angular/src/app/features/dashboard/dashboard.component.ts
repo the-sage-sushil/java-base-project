@@ -16,7 +16,7 @@ import { AuthService } from '../../core/auth/auth.service';
         @if (auth.hasRole('ROLE_ADMIN')) {
           <a routerLink="/admin/users">Manage users</a>
         }
-        <button type="button" (click)="auth.logout()">Sign out</button>
+        <button type="button" (click)="logout()">Sign out</button>
       </nav>
     </main>
   `,
@@ -30,4 +30,10 @@ import { AuthService } from '../../core/auth/auth.service';
 })
 export class DashboardComponent {
   readonly auth = inject(AuthService);
+
+  logout(): void {
+    this.auth.logout().subscribe({
+      error: (error: unknown) => console.error('Unable to complete logout', error)
+    });
+  }
 }
